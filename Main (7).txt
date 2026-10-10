@@ -1,4 +1,177 @@
--- если ты это спастишь - твоя мать шлюха
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+local HttpService = game:GetService("HttpService")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "EpsteinKeySystem"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = CoreGui
+
+local BlurEffect = Instance.new("BlurEffect")
+BlurEffect.Size = 0
+BlurEffect.Parent = game:GetService("Lighting")
+TweenService:Create(BlurEffect, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = 18}):Play()
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 390, 0, 240)
+MainFrame.Position = UDim2.new(0.5, -195, 0.45, -120)
+MainFrame.BackgroundColor3 = Color3.fromRGB(11, 11, 14)
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundTransparency = 1
+TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    Position = UDim2.new(0.5, -195, 0.5, -120),
+    BackgroundTransparency = 0
+}):Play()
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 14)
+MainCorner.Parent = MainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Thickness = 1.2
+MainStroke.Color = Color3.fromRGB(45, 45, 55)
+MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+MainStroke.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 55)
+Title.BackgroundTransparency = 1
+Title.Text = "Epstein Hub Key System"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.Parent = MainFrame
+
+local KeyInput = Instance.new("TextBox")
+KeyInput.Size = UDim2.new(0, 330, 0, 45)
+KeyInput.Position = UDim2.new(0.5, -165, 0, 70)
+KeyInput.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+KeyInput.BorderSizePixel = 0
+KeyInput.Text = ""
+KeyInput.PlaceholderText = "Paste access key here..."
+KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyInput.PlaceholderColor3 = Color3.fromRGB(85, 85, 95)
+KeyInput.Font = Enum.Font.Gotham
+KeyInput.TextSize = 14
+KeyInput.Parent = MainFrame
+
+local InputCorner = Instance.new("UICorner")
+InputCorner.CornerRadius = UDim.new(0, 8)
+InputCorner.Parent = KeyInput
+
+local InputStroke = Instance.new("UIStroke")
+InputStroke.Thickness = 1
+InputStroke.Color = Color3.fromRGB(35, 35, 40)
+InputStroke.Parent = KeyInput
+
+local GetKeyBtn = Instance.new("TextButton")
+GetKeyBtn.Size = UDim2.new(0, 155, 0, 42)
+GetKeyBtn.Position = UDim2.new(0, 30, 0, 145)
+GetKeyBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+GetKeyBtn.Text = "Get Key"
+GetKeyBtn.TextColor3 = Color3.fromRGB(200, 200, 205)
+GetKeyBtn.Font = Enum.Font.GothamBold
+GetKeyBtn.TextSize = 13
+GetKeyBtn.Parent = MainFrame
+
+local GetCorner = Instance.new("UICorner")
+GetCorner.CornerRadius = UDim.new(0, 8)
+GetCorner.Parent = GetKeyBtn
+
+local GetStroke = Instance.new("UIStroke")
+GetStroke.Thickness = 1
+GetStroke.Color = Color3.fromRGB(45, 45, 52)
+GetStroke.Parent = GetKeyBtn
+
+local VerifyKeyBtn = Instance.new("TextButton")
+VerifyKeyBtn.Size = UDim2.new(0, 155, 0, 42)
+VerifyKeyBtn.Position = UDim2.new(0, 205, 0, 145)
+VerifyKeyBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+VerifyKeyBtn.Text = "Verify Key"
+VerifyKeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+VerifyKeyBtn.Font = Enum.Font.GothamBold
+VerifyKeyBtn.TextSize = 13
+VerifyKeyBtn.Parent = MainFrame
+
+local VerifyCorner = Instance.new("UICorner")
+VerifyCorner.CornerRadius = UDim.new(0, 8)
+VerifyCorner.Parent = VerifyKeyBtn
+
+local Footer = Instance.new("TextLabel")
+Footer.Size = UDim2.new(1, 0, 0, 30)
+Footer.Position = UDim2.new(0, 0, 1, -30)
+Footer.BackgroundTransparency = 1
+Footer.Text = "System initialized. Standing by..."
+Footer.TextColor3 = Color3.fromRGB(130, 130, 140)
+Footer.Font = Enum.Font.GothamMedium
+Footer.TextSize = 11
+Footer.Parent = MainFrame
+
+local ValidKeys = {
+    ["tg_epsteinhub724"] = true, ["tg_epsteinhub142"] = true, ["tg_epsteinhub905"] = true,
+    ["tg_epsteinhub318"] = true, ["tg_epsteinhub641"] = true, ["tg_epsteinhub883"] = true,
+    ["tg_epsteinhub457"] = true, ["tg_epsteinhub219"] = true, ["tg_epsteinhub533"] = true,
+    ["tg_epsteinhub796"] = true, ["tg_epsteinhub115"] = true, ["tg_epsteinhub982"] = true,
+    ["tg_epsteinhub364"] = true, ["tg_epsteinhub608"] = true, ["tg_epsteinhub271"] = true,
+    ["если ты это спастишь то ты гей"] = true
+}
+
+local CacheFile = "EpsteinHub_Auth.json"
+
+local function saveAuth(key)
+    if writefile then
+        local data = { SavedKey = key, ExpireTime = os.time() + 86400 }
+        pcall(function() writefile(CacheFile, HttpService:JSONEncode(data)) end)
+    end
+end
+
+local function checkSavedAuth()
+    if readfile and isfile and isfile(CacheFile) then
+        local ok, result = pcall(function() return HttpService:JSONDecode(readfile(CacheFile)) end)
+        if ok and result and result.SavedKey and result.ExpireTime then
+            if ValidKeys[result.SavedKey] == true and os.time() < result.ExpireTime then
+                return result
+            else
+                pcall(function() delfile(CacheFile) end)
+            end
+        end
+    end
+    return nil
+end
+
+GetKeyBtn.MouseEnter:Connect(function()
+    TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 42)}):Play()
+end)
+GetKeyBtn.MouseLeave:Connect(function()
+    TweenService:Create(GetKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 30)}):Play()
+end)
+VerifyKeyBtn.MouseEnter:Connect(function()
+    TweenService:Create(VerifyKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 140, 255)}):Play()
+end)
+VerifyKeyBtn.MouseLeave:Connect(function()
+    TweenService:Create(VerifyKeyBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 120, 255)}):Play()
+end)
+KeyInput.Focused:Connect(function()
+    TweenService:Create(InputStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 120, 255)}):Play()
+end)
+KeyInput.FocusLost:Connect(function()
+    TweenService:Create(InputStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(35, 35, 40)}):Play()
+end)
+
+local function closeAndLoad()
+    TweenService:Create(BlurEffect, TweenInfo.new(0.4), {Size = 0}):Play()
+    TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Position = UDim2.new(0.5, -195, 0.55, -120),
+        BackgroundTransparency = 1
+    }):Play()
+    task.wait(0.4)
+    ScreenGui:Destroy()
+    BlurEffect:Destroy()
+    task.wait(0.1)
+-- если ты это спасёшь - твоя мать шлюха
 _G.A = {}
 local A = _G.A
 
@@ -1196,8 +1369,7 @@ do
             if A.CreateAirWalkButton then A.CreateAirWalkButton() end
         else
             if A.DestroyAirWalkButton then A.DestroyAirWalkButton() end
-        end
-    end)
+        end    end)
 
     local SL = A.ScrollsL[4]
     local SR = A.ScrollsR[4]
@@ -2753,4 +2925,49 @@ task.defer(function()
     end
 end)
 
-print("Чем больше пастишь - меньше спишь")
+-- чем больше пастишь - меньше спишь
+end
+
+GetKeyBtn.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard("t.me/getkeyepsteinbot")
+        Footer.Text = "Link copied"
+        Footer.TextColor3 = Color3.fromRGB(200, 200, 205)
+        GetKeyBtn.Text = "Copied!"
+        task.wait(1.5)
+        GetKeyBtn.Text = "Get Key"
+        Footer.Text = "System initialized. Standing by..."
+    end
+end)
+
+VerifyKeyBtn.MouseButton1Click:Connect(function()
+    local enteredKey = string.gsub(KeyInput.Text, "^%s*(.-)%s*$", "%1")
+    if ValidKeys[enteredKey] == true then
+        Footer.Text = "Key Verified"
+        Footer.TextColor3 = Color3.fromRGB(0, 255, 130)
+        VerifyKeyBtn.Text = "Approved"
+        VerifyKeyBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 90)
+        saveAuth(enteredKey)
+        task.wait(1.2)
+        closeAndLoad()
+    else
+        Footer.Text = "Key invalid"
+        Footer.TextColor3 = Color3.fromRGB(255, 60, 60)
+        VerifyKeyBtn.Text = "Failed"
+        VerifyKeyBtn.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+        task.wait(1.5)
+        VerifyKeyBtn.Text = "Verify Key"
+        VerifyKeyBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+    end
+end)
+
+local activeAuth = checkSavedAuth()
+if activeAuth then
+    local timeLeft = activeAuth.ExpireTime - os.time()
+    local hours = math.floor(timeLeft / 3600)
+    local minutes = math.floor((timeLeft % 3600) / 60)
+    Footer.Text = string.format("Session active: %dh %dm remaining", hours, minutes)
+    Footer.TextColor3 = Color3.fromRGB(0, 255, 130)
+    task.wait(0.6)
+    closeAndLoad()
+end
